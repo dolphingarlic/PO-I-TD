@@ -38,11 +38,11 @@ async def random_problem():
 async def start(ctx):
     global CHANNEL
     if CHANNEL == None:
-        CHANNEL = ctx.message.CHANNEL
+        CHANNEL = ctx.message.channel
         await ctx.send('Starting. You will be sent a random OI problem every day now.')
         random_problem.start()
     else:
-        await ctx.send('The BOT is already running in another CHANNEL')
+        await ctx.send('The BOT is already running in another channel')
 
 
 @BOT.command()
