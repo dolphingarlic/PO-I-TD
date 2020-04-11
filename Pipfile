@@ -10,6 +10,7 @@ autopep8 = "*"
 discord-py = "*"
 python-dotenv = "*"
 requests = "*"
+flask = "*"
 
 [requires]
 python_version = "3.7"

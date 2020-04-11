@@ -1,3 +1,5 @@
+from keep_alive import keep_alive
+
 import os
 
 import requests
@@ -8,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-BOT = commands.Bot("~")
+BOT = commands.Bot("ä")
 CHANNEL = None
 
 
@@ -42,14 +44,15 @@ async def start(ctx):
         await ctx.send('Starting. You will be sent a random OI problem every day now.')
         random_problem.start()
     else:
-        await ctx.send('The BOT is already running in another channel')
+        await ctx.send('The bot is already running in another channel')
 
 
 @BOT.command()
 async def stop(ctx):
     global CHANNEL
     CHANNEL = None
-    await ctx.send('Stopping BOT. You will no longer be sent random problems every day.')
+    await ctx.send('Stopping bot. You will no longer be sent random problems every day.')
     random_problem.stop()
 
+keep_alive()
 BOT.run(TOKEN)
