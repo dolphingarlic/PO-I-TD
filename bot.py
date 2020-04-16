@@ -1,7 +1,7 @@
-from keep_alive import keep_alive
-
 import os
+import asyncio
 
+from datetime import datetime, timedelta
 import requests
 import discord
 from discord.ext import commands, tasks
@@ -10,25 +10,18 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-BOT = commands.Bot("ä")
+BOT = commands.Bot("$")
 CHANNEL = None
-
-
-@BOT.event
-async def on_ready():
-    print(f'{BOT.user} has connected to Discord!')
 
 
 @tasks.loop(hours=24)
 async def random_problem():
+    print('Sending problem!')
     global CHANNEL
-    problem = requests.get(
-        'https://apioipa.herokuapp.com/random-problem/').json()
-    source = requests.get(
-        f'https://apioipa.herokuapp.com/sources/{problem["source"]}').json()['abbreviation']
+    problem = requests.get('https://apioipa.herokuapp.com/random-problem/').json()
+    source = requests.get(f'https://apioipa.herokuapp.com/sources/{problem["source"]}').json()['abbreviation']
 
-    embed = discord.Embed(
-        title=f'{source} {problem["from_year"]} - {problem["name"]}', color=0x00ff00)
+    embed = discord.Embed(title=f'{source} {problem["from_year"]} - {problem["name"]}', color=0x00ff00)
     embed.url = problem['url']
     embed.description = 'Problem of the Day'
     embed.set_image(url=problem['image'])
@@ -36,23 +29,28 @@ async def random_problem():
     await CHANNEL.send(embed=embed)
 
 
-@BOT.command()
-async def start(ctx):
+@random_problem.before_loop
+async def before_random_problem():
+    await BOT.wait_until_ready()
+
+    hour = 8
+    minute = 20
+    now = datetime.now()
+    future = datetime(now.year, now.month, now.day, hour, minute)
+
+    if now.hour >= hour and now.minute > minute:
+        future += timedelta(days=1)
+
+    await asyncio.sleep((future - now).seconds)
+
+
+@BOT.event
+async def on_ready():
+    print(f'{BOT.user} has connected to Discord!')
     global CHANNEL
-    if CHANNEL == None:
-        CHANNEL = ctx.message.channel
-        await ctx.send('Starting. You will be sent a random OI problem every day now.')
-        random_problem.start()
-    else:
-        await ctx.send('The bot is already running in another channel')
+    CHANNEL = BOT.get_channel(627064201797697543)
 
 
-@BOT.command()
-async def stop(ctx):
-    global CHANNEL
-    CHANNEL = None
-    await ctx.send('Stopping bot. You will no longer be sent random problems every day.')
-    random_problem.stop()
+random_problem.start()
 
-keep_alive()
 BOT.run(TOKEN)
