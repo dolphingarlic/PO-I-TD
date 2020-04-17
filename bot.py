@@ -11,10 +11,9 @@ from datetime import datetime, timedelta
 import requests
 import discord
 from discord.ext import commands, tasks
-from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.environ['DISCORD_TOKEN']
 
 BOT = commands.Bot("$")
 CHANNEL = None
