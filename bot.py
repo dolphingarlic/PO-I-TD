@@ -12,7 +12,6 @@ import requests
 import discord
 from discord.ext import commands, tasks
 
-load_dotenv()
 TOKEN = os.environ['DISCORD_TOKEN']
 
 BOT = commands.Bot("$")
