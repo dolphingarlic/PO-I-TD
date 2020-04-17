@@ -20,7 +20,7 @@ BOT = commands.Bot("$")
 CHANNEL = None
 
 
-async def random_problem():
+async def random_problem(description):
     '''
     Gets a random problem from APIOIPA and sends it as an embed
     '''
@@ -29,13 +29,11 @@ async def random_problem():
     global CHANNEL
     problem = requests.get(
         'https://apioipa.herokuapp.com/random-problem/').json()
-    source = requests.get(
-        f'https://apioipa.herokuapp.com/sources/{problem["source"]}').json()['abbreviation']
 
     embed = discord.Embed(
-        title=f'{source} {problem["from_year"]} - {problem["name"]}', color=0x00ff00)
+        title=f'{problem["source"]["abbreviation"]} {problem["from_year"]} - {problem["name"]}', color=0x00ff00)
     embed.url = problem['url']
-    embed.description = 'Problem of the Day'
+    embed.description = description
     embed.set_image(url=problem['image'])
 
     await CHANNEL.send(embed=embed)
@@ -49,7 +47,7 @@ async def gimme(ctx):
 
     global CHANNEL
     CHANNEL = ctx.message.channel
-    await random_problem()
+    await random_problem('Random Problem')
     CHANNEL = BOT.get_channel(627064201797697543)
 
 
@@ -59,13 +57,13 @@ async def potd():
     Sends a random problem every day
     '''
 
-    await random_problem()
+    await random_problem('Problem of the Day')
 
 
 @potd.before_loop
 async def before_potd():
     '''
-    Makes sure the bot sends a random problem every day at 8:20
+    Makes sure the bot sends a random problem every day at 8:20 UTC
     '''
 
     await BOT.wait_until_ready()
