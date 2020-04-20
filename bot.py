@@ -62,8 +62,8 @@ async def before_potd():
 
     await BOT.wait_until_ready()
 
-    hour = 15
-    minute = 3
+    hour = 0
+    minute = 0
     now = datetime.now()
     future = datetime(now.year, now.month, now.day, hour, minute)
 
