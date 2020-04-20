@@ -15,26 +15,25 @@ from discord.ext import commands, tasks
 TOKEN = os.environ['DISCORD_TOKEN']
 
 BOT = commands.Bot("$")
-CHANNEL = None
 
 
-async def random_problem(description):
+async def random_problem(description, channel):
     '''
     Gets a random problem from APIOIPA and sends it as an embed
     '''
 
     print('Sending problem!')
-    global CHANNEL
-    problem = requests.get(
-        'https://apioipa.herokuapp.com/random-problem/').json()
+    problem = requests.get('https://apioipa.herokuapp.com/random-problem/').json()
 
     embed = discord.Embed(
-        title=f'{problem["source"]["abbreviation"]} {problem["from_year"]} - {problem["name"]}', color=0x00ff00)
-    embed.url = problem['url']
-    embed.description = description
+        title=f'{problem["source"]["abbreviation"]} {problem["from_year"]} - {problem["name"]}',
+        color=0x00ff00,
+        description=description,
+        url=problem['url']
+    )
     embed.set_image(url=problem['image'])
 
-    await CHANNEL.send(embed=embed)
+    await channel.send(embed=embed)
 
 
 @BOT.command()
@@ -43,10 +42,7 @@ async def gimme(ctx):
     Sends a random problem to the user in the channel where the command was sent
     '''
 
-    global CHANNEL
-    CHANNEL = ctx.message.channel
-    await random_problem('Random Problem')
-    CHANNEL = BOT.get_channel(627064201797697543)
+    await random_problem('Random Problem', ctx.message.channel)
 
 
 @tasks.loop(hours=24)
@@ -55,19 +51,19 @@ async def potd():
     Sends a random problem every day
     '''
 
-    await random_problem('Problem of the Day')
+    await random_problem('Problem of the Day', BOT.get_channel(int(os.environ['CHANNEL_ID'])))
 
 
 @potd.before_loop
 async def before_potd():
     '''
-    Makes sure the bot sends a random problem every day at 8:20 UTC
+    Makes sure the bot sends a random problem every day at 0:00 UTC
     '''
 
     await BOT.wait_until_ready()
 
-    hour = 8
-    minute = 20
+    hour = 15
+    minute = 3
     now = datetime.now()
     future = datetime(now.year, now.month, now.day, hour, minute)
 
@@ -84,8 +80,6 @@ async def on_ready():
     '''
 
     print(f'{BOT.user} has connected to Discord!')
-    global CHANNEL
-    CHANNEL = BOT.get_channel(627064201797697543)
 
 
 potd.start()
