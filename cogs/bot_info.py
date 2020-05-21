@@ -68,7 +68,7 @@ class BotInfo(Cog):
             description='PO(I)TD automatically sends a problem to a channel named `#problem-of-the-day` or `#potd` every day',
             colour=0x41c03f
         ).add_field(
-            name=f'`{self.prefix}gimme',
+            name=f'`{self.prefix}gimme`',
             value='Sends a random problem',
             inline=True
         ).add_field(
