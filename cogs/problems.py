@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import aiohttp
 from discord import Embed
 from discord.utils import find
-from discord.ext.commands import Cog, command
+from discord.ext.commands import Cog, command, has_permissions
 from discord.ext.tasks import loop
 
 
@@ -26,6 +26,7 @@ class Problems(Cog):
         async with session.get(url, **kwargs) as response:
             return await response.json()
 
+    @has_permissions(send_messages=True, embed_links=True)
     async def random_problem(self, description, channel):
         """
         Gets a random problem from APIOIPA and sends it as an embed
@@ -64,7 +65,11 @@ class Problems(Cog):
 
         for guild in self.bot.guilds:
             potd_channel = find(lambda x: x.name == 'problem-of-the-day' or x.name == 'potd', guild.text_channels)
-            await self.random_problem('Problem of the Day', potd_channel)
+            try:
+                await self.random_problem('Problem of the Day', potd_channel)
+            except:
+                print(f'Error sending to {guild}')
+                continue
 
     @potd.before_loop
     async def before_potd(self):
