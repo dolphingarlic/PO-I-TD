@@ -12,6 +12,8 @@ from discord.ext.commands import Bot, when_mentioned_or
 
 from cogs.bot_info import BotInfo
 from cogs.problems import Problems
+from cogs.analytics import Analytics
+from cogs.top_gg import TopGG
 
 logging.basicConfig(level=logging.INFO)
 
@@ -27,5 +29,11 @@ bot = Bot(
 
 bot.add_cog(BotInfo(bot))
 bot.add_cog(Problems(bot))
+
+if 'PRISMA_TOKEN' in os.environ:
+    bot.add_cog(Analytics(bot))
+
+if 'TOP_GG_TOKEN' in os.environ:
+    bot.add_cog(TopGG(bot))
 
 bot.run(os.environ['DISCORD_TOKEN'])
