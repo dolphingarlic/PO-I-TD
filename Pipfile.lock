@@ -101,11 +101,10 @@
         },
         "prismapy": {
             "hashes": [
-                "sha256:0702c91ebd1aebf964d6ab8fdcda556ac37aa3b3e67649928c0702e1f90a70f0",
-                "sha256:a89e1c37d40dc9e66bc021bde7df40b033928bfe96981e4f1d1e244d8846d615"
+                "sha256:b783a2779d32c6d0f0fee371ac37e3c12f96a192f01478d3fb67a56dac253e3b"
             ],
             "index": "pypi",
-            "version": "==2.1.1"
+            "version": "==2.1.2"
         },
         "ratelimiter": {
             "hashes": [

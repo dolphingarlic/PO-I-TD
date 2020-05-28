@@ -9,8 +9,8 @@ autopep8 = "*"
 [packages]
 discord-py = "*"
 aiohttp = "*"
-prismapy = "*"
 dblpy = "*"
+prismapy = "*"
 
 [requires]
 python_version = "3.7"
