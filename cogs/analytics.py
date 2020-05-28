@@ -13,7 +13,7 @@ import prismapy
 class Analytics(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.analytics = prismapy.Prismalytics(os.environ['PRISMA_TOKEN'], bot)
+        self.analytics = prismapy.Prismalytics(os.environ['PRISMA_TOKEN'], bot, save_server=True)
 
     @Cog.listener()
     async def on_command(self, ctx):
